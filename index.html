@@ -1,51 +1,68 @@
-<div id='testdiv'>Test 3!</div>
 <script>
 var test=document.cookie;
-document.getElementById("testdiv").innerHTML=test;
-console.log(test);
-</script>
-<select name="dd_montype1" id="dd_montype1">
-  <option value=0>Normal</option>
-  <option value=1>Fighting</option>
-  <option value=2>Flying</option>
-  <option value=3>Poison</option>
-  <option value=4>Ground</option>
-  <option value=5>Rock</option>
-  <option value=6>Bug</option>
-  <option value=7>Ghost</option>
-  <option value=8>Steel</option>
-  <option value=9>Fire</option>
-  <option value=10>Water</option>
-  <option value=11>Grass</option>
-  <option value=12>Electric</option>
-  <option value=13>Psychic</option>
-  <option value=14>Ice</option>
-  <option value=15>Dragon</option>
-  <option value=16>Dark</option>
-  <option value=17>Fairy</option>
-</select>
 
-<script>var dd_type="<select name='dd_montype' id='dd_montype1'>
-  <option value=0>Normal</option>
-  <option value=1>Fighting</option>
-  <option value=2>Flying</option>
-  <option value=3>Poison</option>
-  <option value=4>Ground</option>
-  <option value=5>Rock</option>
-  <option value=6>Bug</option>
-  <option value=7>Ghost</option>
-  <option value=8>Steel</option>
-  <option value=9>Fire</option>
-  <option value=10>Water</option>
-  <option value=11>Grass</option>
-  <option value=12>Electric</option>
-  <option value=13>Psychic</option>
-  <option value=14>Ice</option>
-  <option value=15>Dragon</option>
-  <option value=16>Dark</option>
-  <option value=17>Fairy</option>";
+mypokemon=[];
 </script>
 
-<select name="dd_montype2" id="dd_montype2"><select>
+
+<input name="input_monname" id="input_monname" />
+<select name="dd_montype1" id="dd_montype1"></select>
+<select name="dd_montype2" id="dd_montype2"><option value=-1>No type</option></select>
+<select name="dd_monteratype" id="dd_monteratype"></select>
+<select name="dd_monability" id="dd_monability"></select>
+<br/><textarea id="txt_monnote"></textarea><br/>
+<select name="dd_monattacktype" id="dd_monattacktype"></select>
+<select name="dd_mondefensetype" id="dd_mondefensetype"></select><br/>
+<select name="dd_monoffmovetype1" id="dd_monoffmovetype1"><option value=-1>No move</option></select>
+<select name="dd_monoffmovetype2" id="dd_monoffmovetype2"><option value=-1>No move</option></select>
+<select name="dd_monoffmovetype3" id="dd_monoffmovetype3"><option value=-1>No move</option></select>
+<select name="dd_monoffmovetype4" id="dd_monoffmovetype4"><option value=-1>No move</option></select><br/>
+<input type="button" value="Add" onclick="addPokemon()"/>
+
+<script>
+var dd_type="<option value=0>Normal</option>  <option value=1>Fighting</option>  <option value=2>Flying</option>  <option value=3>Poison</option>  <option value=4>Ground</option>  <option value=5>Rock</option>  <option value=6>Bug</option>  <option value=7>Ghost</option>  <option value=8>Steel</option>  <option value=9>Fire</option>  <option value=10>Water</option>  <option value=11>Grass</option>  <option value=12>Electric</option>  <option value=13>Psychic</option>  <option value=14>Ice</option>  <option value=15>Dragon</option>  <option value=16>Dark</option>  <option value=17>Fairy</option>";
+var dd_ability="<option value=-1>-</option> <option value=0>Dry Skin</option> <option value=1>Earth Eater</option> <option value=2>Flash Fire</option> <option value=3>Fluffy</option> <option value=4>Heatproof</option> <option value=5>Levitate</option> <option value=6>Lightning Rod</option> <option value=7>Motor Drive</option> <option value=8>Purifying Salt</option> <option value=9>Sap Sipper</option> <option value=10>Storm Drain</option> <option value=11>Thick Fat</option> <option value=12>Volt Absorb</option> <option value=13>Water Absorb</option> <option value=14>Water Bubble</option> <option value=15>Well-Baked Body</option>";
+var dd_attacktypemon="<option value=1>Physical attacks</option> <option value=2>Special attacks</option> <option value=3>No attacks</option> <option value=4>Either physical or special</option>";
+var dd_defensetypemon="<option value=1>Physical (<250)</option> <option value=2>Physical (250+)</option> <option value=3>Special (<250)</option> <option value=3>Special (250+)</option> <option value=5>Balanced (<250)</option> <option value=6>Balanced (250+)</option>";
+</script>
  
-<script>document.getElementById("dd_montype2").innerHTML=dd_type;</script>
+<script>
+document.getElementById("dd_montype1").innerHTML=dd_type;
+document.getElementById("dd_montype2").innerHTML+=dd_type;
+document.getElementById("dd_monteratype").innerHTML=dd_type;
+document.getElementById("dd_monability").innerHTML=dd_ability;
+document.getElementById("dd_monattacktype").innerHTML=dd_attacktypemon;
+document.getElementById("dd_mondefensetype").innerHTML=dd_defensetypemon;
+document.getElementById("dd_monoffmovetype1").innerHTML+=dd_type;
+document.getElementById("dd_monoffmovetype2").innerHTML+=dd_type;
+document.getElementById("dd_monoffmovetype3").innerHTML+=dd_type;
+document.getElementById("dd_monoffmovetype4").innerHTML+=dd_type;
+
+
+function addPokemon() 
+	{
+	var a=mypokemon.length;
+	mypokemon[a]=[];
+	const formelementstoadd=["input_monname","dd_montype1","dd_montype2","dd_monteratype","dd_monability","txt_monnote","dd_monattacktype","dd_mondefensetype","dd_monoffmovetype1","dd_monoffmovetype2","dd_monoffmovetype3","dd_monoffmovetype4"];
+	for (var i=0;i<=formelementstoadd.length-1;i++) 
+		{
+		mypokemon[a].push(document.getElementById(formelementstoadd[i]).value);
+		}
+	generateCookie();
+	}
+
+function generateCookie() 
+	{
+	var cookiecontents="";
+	for (var i=0;i<=mypokemon.length-1;i++) 
+		{
+		for (var j=0;j<=mypokemon[i].length-1;j++) 
+			{
+			cookiecontents+=mypokemon[i][j];+"¤¤";
+			}
+		cookiecontents+="££";
+		}
+	document.cookie=cookiecontents;
+	}
+
+</script>
