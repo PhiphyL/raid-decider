@@ -1,42 +1,280 @@
-<script>
-var test=document.cookie;
+<style>
+.basiccell {overflow: hidden; display:inline-flex;}
+.smallertext {font-size:10px;}
+.divtable {}
+</style>
 
-mypokemon=[];
+<script>
+var thecookie=document.cookie;
+if(thecookie!="") {
+	var mypokemon=thecookie.split("@@");
+	for (var i=0;i<=mypokemon.length-1;i++) mypokemon[i]=mypokemon[i].split("~~");
+	} else var mypokemon=[];
+	
+var deftotals=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+	
+const TYPECHART= [
+  [1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 0.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], 
+  [2.0, 1.0, 0.5, 0.5, 1.0, 2.0, 0.5, 0.0, 2.0, 1.0, 1.0, 1.0, 1.0, 0.5, 2.0, 1.0, 2.0, 0.5], 
+  [1.0, 2.0, 1.0, 1.0, 1.0, 0.5, 2.0, 1.0, 0.5, 1.0, 1.0, 2.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0], 
+  [1.0, 1.0, 1.0, 0.5, 0.5, 0.5, 1.0, 0.5, 0.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0], 
+  [1.0, 1.0, 0.0, 2.0, 1.0, 2.0, 0.5, 1.0, 2.0, 2.0, 1.0, 0.5, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0], 
+  [1.0, 0.5, 2.0, 1.0, 0.5, 1.0, 2.0, 1.0, 0.5, 2.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0], 
+  [1.0, 0.5, 0.5, 0.5, 1.0, 1.0, 1.0, 0.5, 0.5, 0.5, 1.0, 2.0, 1.0, 2.0, 1.0, 1.0, 2.0, 0.5], 
+  [0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 0.5, 1.0], 
+  [1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 0.5, 0.5, 0.5, 1.0, 0.5, 1.0, 2.0, 1.0, 1.0, 2.0], 
+  [1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 2.0, 1.0, 2.0, 0.5, 0.5, 2.0, 1.0, 1.0, 2.0, 0.5, 1.0, 1.0], 
+  [1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 1.0, 1.0, 1.0, 2.0, 0.5, 0.5, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0], 
+  [1.0, 1.0, 0.5, 0.5, 2.0, 2.0, 0.5, 1.0, 0.5, 0.5, 2.0, 0.5, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0], 
+  [1.0, 1.0, 2.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 0.5, 0.5, 1.0, 1.0, 0.5, 1.0, 1.0], 
+  [1.0, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 0.0, 1.0], 
+  [1.0, 1.0, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 0.5, 0.5, 0.5, 2.0, 1.0, 1.0, 0.5, 2.0, 1.0, 1.0], 
+  [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 0.0], 
+  [1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 0.5, 0.5], 
+  [1.0, 2.0, 1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 0.5, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 1.0]
+]
+
+const TYPECOLOR=["#a8a878","#c03028","#a890f0","#a040a0","#e0c068","#b8a038","#a8b820","#705898","#b8b8d0","#f08030","#6890f0","#78c850","#f8d030","#f85888","#98d8d8","#7038f8","#705848","#ee99ac",];
+const ALLTYPES=["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel", "Fire", "Water", "Grass", "Electric", "Psychic", "Ice", "Dragon", "Dark", "Fairy"];
+const ABILITIES=["Dry Skin","Earth Eater","Flash Fire","Fluffy","Heatproof","Levitate","Lightning Rod","Motor Drive","Purifying Salt","Sap Sipper","Storm Drain","Thick Fat","Volt Absorb","Water Absorb","Water Bubble","Well-Baked Body"];
+const ATTACKTYPEMON=["","Physical attacks","Special attacks","No attacks","Either physical or special"];
+const DEFENSETYPEMON=["","Physical (<250)","Physical (250+)","Special (<250)","Special (250+)","Balanced (<250)","Balanced (250+)"];
+const DD_TYPES=[[6,"Bug"],[16,"Dark"],[15,"Dragon"],[12,"Electric"],[17,"Fairy"],[1,"Fighting"],[9,"Fire"],[2,"Flying"],[7,"Ghost"],[11,"Grass"],[4,"Ground"],[14,"Ice"],[0,"Normal"],[3,"Poison"],[13,"Psychic"],[5,"Rock"],[8,"Steel"],[10,"Water"]];
+const DD_ABILITY=[[-1,"-"],[0,"Dry Skin"],[1,"Earth Eater"],[2,"Flash Fire"],[3,"Fluffy"],[4,"Heatproof"],[5,"Levitate"],[6,"Lightning Rod"],[7,"Motor Drive"],[8,"Purifying Salt"],[9,"Sap Sipper"],[10,"Storm Drain"],[11,"Thick Fat"],[12,"Volt Absorb"],[13,"Water Absorb"],[14,"Water Bubble"],[15,"Well-Baked Body"]];
+const DD_ATTACKPOKEMON=[[1,"Physical attacks"],[2,"Special attacks"],[3,"No attacks"],[4,"Either physical or special"]];
+const DD_DEFENSEPOKEMON=[[1,"Physical (<250)"],[2,"Physical (250+)"],[3,"Special (<250)"],[4,"Special (250+)"],[5,"Balanced (<250)"],[6,"Balanced (250+)"]];
 </script>
 
+<div id="div_thetable">
 
-<input name="input_monname" id="input_monname" />
-<select name="dd_montype1" id="dd_montype1"></select>
-<select name="dd_montype2" id="dd_montype2"><option value=-1>No type</option></select>
-<select name="dd_monteratype" id="dd_monteratype"></select>
-<select name="dd_monability" id="dd_monability"></select>
-<br/><textarea id="txt_monnote"></textarea><br/>
-<select name="dd_monattacktype" id="dd_monattacktype"></select>
-<select name="dd_mondefensetype" id="dd_mondefensetype"></select><br/>
-<select name="dd_monoffmovetype1" id="dd_monoffmovetype1"><option value=-1>No move</option></select>
-<select name="dd_monoffmovetype2" id="dd_monoffmovetype2"><option value=-1>No move</option></select>
-<select name="dd_monoffmovetype3" id="dd_monoffmovetype3"><option value=-1>No move</option></select>
-<select name="dd_monoffmovetype4" id="dd_monoffmovetype4"><option value=-1>No move</option></select><br/>
-<input type="button" value="Add" onclick="addPokemon()"/>
+</div>
+
+<div id="pokemonlist">
+
+</div>
+
+<div id="addpokemonform">
+
+</div>
 
 <script>
-var dd_type="<option value=0>Normal</option>  <option value=1>Fighting</option>  <option value=2>Flying</option>  <option value=3>Poison</option>  <option value=4>Ground</option>  <option value=5>Rock</option>  <option value=6>Bug</option>  <option value=7>Ghost</option>  <option value=8>Steel</option>  <option value=9>Fire</option>  <option value=10>Water</option>  <option value=11>Grass</option>  <option value=12>Electric</option>  <option value=13>Psychic</option>  <option value=14>Ice</option>  <option value=15>Dragon</option>  <option value=16>Dark</option>  <option value=17>Fairy</option>";
-var dd_ability="<option value=-1>-</option> <option value=0>Dry Skin</option> <option value=1>Earth Eater</option> <option value=2>Flash Fire</option> <option value=3>Fluffy</option> <option value=4>Heatproof</option> <option value=5>Levitate</option> <option value=6>Lightning Rod</option> <option value=7>Motor Drive</option> <option value=8>Purifying Salt</option> <option value=9>Sap Sipper</option> <option value=10>Storm Drain</option> <option value=11>Thick Fat</option> <option value=12>Volt Absorb</option> <option value=13>Water Absorb</option> <option value=14>Water Bubble</option> <option value=15>Well-Baked Body</option>";
-var dd_attacktypemon="<option value=1>Physical attacks</option> <option value=2>Special attacks</option> <option value=3>No attacks</option> <option value=4>Either physical or special</option>";
-var dd_defensetypemon="<option value=1>Physical (<250)</option> <option value=2>Physical (250+)</option> <option value=3>Special (<250)</option> <option value=3>Special (250+)</option> <option value=5>Balanced (<250)</option> <option value=6>Balanced (250+)</option>";
+
+function generateAddForm(mode,row)
+	{
+	
+	if(mode=="edit") var theform=document.getElementById("pokemonlistrow"+row);
+		else var theform=document.getElementById("addpokemonform");
+	theform.innerHTML="";
+	var input_monname = document.createElement("input"); input_monname.id="input_monname"; theform.appendChild(input_monname); if(mode=="edit") input_monname.id+="_edit";
+	var dd_montype1 = document.createElement("select"); dd_montype1.id="dd_montype1"; theform.appendChild(dd_montype1); if(mode=="edit") dd_montype1.id+="_edit";
+	for (var i=0;i<=17;i++) { var option = document.createElement("option"); option.value=DD_TYPES[i][0]; option.innerHTML=DD_TYPES[i][1]; dd_montype1.appendChild(option); }
+	var dd_montype2 = document.createElement("select"); dd_montype2.id="dd_montype2"; theform.appendChild(dd_montype2); if(mode=="edit") dd_montype2.id+="_edit";
+	var option = document.createElement("option"); option.value="-1"; option.innerHTML="No type"; dd_montype2.appendChild(option);
+	for (var i=0;i<=17;i++) { var option = document.createElement("option"); option.value=DD_TYPES[i][0]; option.innerHTML=DD_TYPES[i][1]; dd_montype2.appendChild(option); }
+	var dd_monteratype = document.createElement("select"); dd_monteratype.id="dd_monteratype"; theform.appendChild(dd_monteratype); if(mode=="edit") dd_monteratype.id+="_edit";
+	for (var i=0;i<=17;i++) { var option = document.createElement("option"); option.value=DD_TYPES[i][0]; option.innerHTML=DD_TYPES[i][1]; dd_monteratype.appendChild(option); }
+	var dd_monability = document.createElement("select"); dd_monability.id="dd_monability"; theform.appendChild(dd_monability); if(mode=="edit") dd_monability.id+="_edit";
+	for (var i=0;i<=DD_ABILITY.length-1;i++) { var option = document.createElement("option"); option.value=DD_ABILITY[i][0]; option.innerHTML=DD_ABILITY[i][1]; dd_monability.appendChild(option); }
+	theform.appendChild(document.createElement("br"))
+	var txt_monnote = document.createElement("textarea"); txt_monnote.id="txt_monnote"; theform.appendChild(txt_monnote); if(mode=="edit") txt_monnote.id+="_edit";
+	theform.appendChild(document.createElement("br"))
+	var dd_monattacktype = document.createElement("select"); dd_monattacktype.id="dd_monattacktype"; theform.appendChild(dd_monattacktype); if(mode=="edit") dd_monattacktype.id+="_edit";
+	for (var i=0;i<=DD_ATTACKPOKEMON.length-1;i++) { var option = document.createElement("option"); option.value=DD_ATTACKPOKEMON[i][0]; option.innerHTML=DD_ATTACKPOKEMON[i][1]; dd_monattacktype.appendChild(option); }
+	var dd_mondefensetype = document.createElement("select"); dd_mondefensetype.id="dd_mondefensetype"; theform.appendChild(dd_mondefensetype); if(mode=="edit") dd_mondefensetype.id+="_edit";
+	for (var i=0;i<=DD_DEFENSEPOKEMON.length-1;i++) { var option = document.createElement("option"); option.value=DD_DEFENSEPOKEMON[i][0]; option.innerHTML=DD_DEFENSEPOKEMON[i][1]; dd_mondefensetype.appendChild(option); }
+	theform.appendChild(document.createElement("br"))
+	for(var i=1;i<=4;i++) 
+		{
+		var dd_monoffmovetype = document.createElement("select"); 
+		dd_monoffmovetype.id="dd_monoffmovetype"+i; if(mode=="edit") dd_monoffmovetype.id+="_edit";
+		var option = document.createElement("option"); 
+		option.value="-1"; 
+		option.innerHTML="No move"; 
+		dd_monoffmovetype.appendChild(option);
+		for (var j=0;j<=17;j++) { var option = document.createElement("option"); option.value=DD_TYPES[j][0]; option.innerHTML=DD_TYPES[j][1];  dd_monoffmovetype.appendChild(option); }
+		theform.appendChild(dd_monoffmovetype);
+		if(mode=="edit") dd_monoffmovetype.value=mypokemon[row][7+i]; 
+		}
+	if(mode=="edit") 
+		{
+		input_monname.value=mypokemon[row][0]; dd_montype1.value=mypokemon[row][1]; dd_montype2.value=mypokemon[row][2]; dd_monteratype.value=mypokemon[row][3]; dd_monability.value=mypokemon[row][4];
+		txt_monnote.value=mypokemon[row][5]; dd_monattacktype.value=mypokemon[row][6]; dd_mondefensetype.value=mypokemon[row][7]; 
+		button_editconfirm = document.createElement("input"); button_editconfirm.id="button_editconfirm"; button_editconfirm.type="button"; button_editconfirm.value="Ok"; button_editconfirm.onclick=function(){editConfirm(row)}; theform.appendChild(button_editconfirm);
+		button_editcancel = document.createElement("input"); button_editcancel.id="button_cancelconfirm"; button_editcancel.type="button"; button_editcancel.value="Cancel"; button_editcancel.onclick=function(){updatePokemonList('display')}; theform.appendChild(button_editcancel);
+		}
+		else  { var button_addconfirm = document.createElement("input"); button_addconfirm.id="button_addconfirm"; button_addconfirm.type="button"; button_addconfirm.value="Add"; button_addconfirm.onclick=function(){addPokemon()}; theform.appendChild(button_addconfirm); }
+
+	}
+
+generateAddForm();
+
+
 </script>
  
 <script>
-document.getElementById("dd_montype1").innerHTML=dd_type;
-document.getElementById("dd_montype2").innerHTML+=dd_type;
-document.getElementById("dd_monteratype").innerHTML=dd_type;
-document.getElementById("dd_monability").innerHTML=dd_ability;
-document.getElementById("dd_monattacktype").innerHTML=dd_attacktypemon;
-document.getElementById("dd_mondefensetype").innerHTML=dd_defensetypemon;
-document.getElementById("dd_monoffmovetype1").innerHTML+=dd_type;
-document.getElementById("dd_monoffmovetype2").innerHTML+=dd_type;
-document.getElementById("dd_monoffmovetype3").innerHTML+=dd_type;
-document.getElementById("dd_monoffmovetype4").innerHTML+=dd_type;
+
+createTypeTable();
+
+function createTypeTable(mode) 
+	{
+	var thetable=document.getElementById("div_thetable"); thetable.className="divtable";
+	
+	var div_tableheaders = document.createElement("div"); div_tableheaders.id="div_tableheaders"; thetable.appendChild(div_tableheaders); div_tableheaders.style.clear="both";
+	var header_pokemonname = document.createElement("div"); header_pokemonname.id="header_pokemonname"; div_tableheaders.appendChild(header_pokemonname); header_pokemonname.style.width="100px"; header_pokemonname.className="basiccell";
+		header_pokemonname.innerHTML="Name";
+	var header_pokemontype1 = document.createElement("div"); header_pokemontype1.id="header_pokemontype1"; div_tableheaders.appendChild(header_pokemontype1); header_pokemontype1.style.width="40px"; header_pokemontype1.className="basiccell smallertext";
+		header_pokemontype1.innerHTML="Type1";
+	var header_pokemontype2 = document.createElement("div"); header_pokemontype2.id="header_pokemontype2"; div_tableheaders.appendChild(header_pokemontype2); header_pokemontype2.style.width="40px"; header_pokemontype2.className="basiccell smallertext";
+		header_pokemontype2.innerHTML="Type2";
+	var header_pokemonteratype = document.createElement("div"); header_pokemonteratype.id="header_pokemonteratype"; div_tableheaders.appendChild(header_pokemonteratype); header_pokemonteratype.style.width="40px"; header_pokemonteratype.className="basiccell smallertext";
+		header_pokemonteratype.innerHTML="Tera";
+	var header_pokemonability = document.createElement("div"); header_pokemonability.id="header_pokemonability"; div_tableheaders.appendChild(header_pokemonability); header_pokemonability.style.width="100px"; header_pokemonability.className="basiccell";
+		header_pokemonability.innerHTML="Ability";
+	var header_pokemonnote = document.createElement("div"); header_pokemonnote.id="header_pokemonnote"; div_tableheaders.appendChild(header_pokemonnote); header_pokemonnote.style.width="250px"; header_pokemonnote.className="basiccell";
+		header_pokemonnote.innerHTML="Note";
+	var header_elementcells = document.createElement("div"); header_elementcells.id="header_elementcells"; div_tableheaders.appendChild(header_elementcells); header_elementcells.className="basiccell";
+	for(var j=0;j<=17;j++) 
+		{
+		var cell=document.createElement("div"); header_elementcells.appendChild(cell); cell.className="basiccell smallertext"; cell.style.width="20px"; cell.id="header_typecell_"+j;
+		cell.innerHTML=ALLTYPES[j].charAt(0);
+		cell.style.color="#ffffff";
+		cell.style.backgroundColor=TYPECOLOR[j];
+		}
+	var header_pokemonattacktype = document.createElement("div"); header_pokemonattacktype.id="header_pokemonattacktype"; div_tableheaders.appendChild(header_pokemonattacktype); header_pokemonattacktype.style.width="200px"; header_pokemonattacktype.className="basiccell";
+		header_pokemonattacktype.innerHTML="Attack type";
+	var header_pokemondefensetype = document.createElement("div"); header_pokemondefensetype.id="header_pokemondefensetype"; div_tableheaders.appendChild(header_pokemondefensetype); header_pokemondefensetype.style.width="200px"; header_pokemondefensetype.className="basiccell";
+		header_pokemondefensetype.innerHTML="Best defense";
+	deftotals=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+	for(var i=0;i<=mypokemon.length-1;i++) 
+		{
+		var div_tablerow = document.createElement("div"); div_tablerow.id="div_tablerow_"+i; thetable.appendChild(div_tablerow); div_tablerow.style.clear="both";
+		if(((i+2)%2==0)) div_tablerow.style.backgroundColor="#cfe2f3"; else div_tablerow.style.backgroundColor="#9fc5e8";
+		var table_pokemonname = document.createElement("div"); table_pokemonname.id="table_pokemonname_"+i; div_tablerow.appendChild(table_pokemonname); table_pokemonname.style.width="100px"; table_pokemonname.className="basiccell";
+			table_pokemonname.innerHTML=mypokemon[i][0];
+		var table_pokemontype1 = document.createElement("div"); table_pokemontype1.id="table_pokemontype1_"+i; div_tablerow.appendChild(table_pokemontype1); table_pokemontype1.style.width="40px"; table_pokemontype1.className="basiccell smallertext";
+			table_pokemontype1.innerHTML=ALLTYPES[mypokemon[i][1]];
+		var table_pokemontype2 = document.createElement("div"); table_pokemontype2.id="table_pokemontype2_"+i; div_tablerow.appendChild(table_pokemontype2); table_pokemontype2.style.width="40px"; table_pokemontype2.className="basiccell smallertext";
+			if(mypokemon[i][2]>-1) table_pokemontype2.innerHTML=ALLTYPES[mypokemon[i][2]];
+		var table_pokemonteratype = document.createElement("div"); table_pokemonteratype.id="table_pokemonteratype_"+i; div_tablerow.appendChild(table_pokemonteratype); table_pokemonteratype.style.width="40px"; table_pokemonteratype.className="basiccell smallertext";
+			table_pokemonteratype.innerHTML=ALLTYPES[mypokemon[i][3]];
+		var table_pokemonability = document.createElement("div"); table_pokemonability.id="table_pokemonability_"+i; div_tablerow.appendChild(table_pokemonability); table_pokemonability.style.width="100px"; table_pokemonability.className="basiccell";
+			if(mypokemon[i][4]>-1) table_pokemonability.innerHTML=ABILITIES[mypokemon[i][4]];
+		var table_pokemonnote = document.createElement("div"); table_pokemonnote.id="table_pokemonnote_"+i; div_tablerow.appendChild(table_pokemonnote); table_pokemonnote.style.width="250px"; table_pokemonnote.className="basiccell";
+			table_pokemonnote.innerHTML=mypokemon[i][5];
+		var table_elementcells = document.createElement("div"); table_elementcells.id="table_elementcells_"+i; div_tablerow.appendChild(table_elementcells); table_elementcells.className="basiccell";
+		var table_pokemonattacktype = document.createElement("div"); table_pokemonattacktype.id="table_pokemonattacktype_"+i; div_tablerow.appendChild(table_pokemonattacktype); table_pokemonattacktype.style.width="200px"; table_pokemonattacktype.className="basiccell";
+			table_pokemonattacktype.innerHTML=ATTACKTYPEMON[mypokemon[i][6]];
+		var table_pokemondefensetype = document.createElement("div"); table_pokemondefensetype.id="table_pokemondefensetype_"+i; div_tablerow.appendChild(table_pokemondefensetype); table_pokemondefensetype.style.width="200px"; table_pokemondefensetype.className="basiccell";
+			table_pokemondefensetype.innerHTML=DEFENSETYPEMON[mypokemon[i][7]];
+		for(var j=0;j<=17;j++) 
+			{
+			var cell=document.createElement("div"); table_elementcells.appendChild(cell); cell.className="basiccell smallertext"; cell.style.width="20px"; cell.id="table_typecell_"+i+"_"+j;
+			if(((j+2)%2==0)) cell.style.backgroundColor="#1fe2f3"; else cell.style.backgroundColor="#3fc5e8";
+			}
+		overviewCalc(i);
+		}
+	var min = Math.min(...deftotals);
+	var max = Math.max(...deftotals);
+	var diff=max-min;
+
+	const gradientcolours=["#e67c73","#ffe9e9","#ffe9e9","#b7e1cd","#58bb8a","#58bb8a"];
+
+	var div_tablerow = document.createElement("div"); div_tablerow.id="div_tablerow_"+i; document.getElementById("div_thetable").appendChild(div_tablerow); div_tablerow.style.clear="both";
+	var width=parseInt(document.getElementById("table_pokemonname_1").style.width.split("px")[0])+parseInt(document.getElementById("table_pokemontype1_1").style.width.split("px")[0])+parseInt(document.getElementById("table_pokemontype2_1").style.width.split("px")[0])+parseInt(document.getElementById("table_pokemonteratype_1").style.width.split("px")[0])+parseInt(document.getElementById("table_pokemonability_1").style.width.split("px")[0])+parseInt(document.getElementById("table_pokemonnote_1").style.width.split("px")[0]);
+	console.log(width);
+	var resistdiv = document.createElement("div"); resistdiv.id="resistdiv"; div_tablerow.appendChild(resistdiv); resistdiv.style.width=width+"px"; resistdiv.className="basiccell";
+	var resistcells = document.createElement("div"); resistcells.id="resistcells"; div_tablerow.appendChild(resistcells); resistcells.className="basiccell";
+	resistdiv.innerHTML="Total resist/immnune:";
+	for(var i=0;i<=17;i++) 
+		{
+		var cell=document.createElement("div"); resistcells.appendChild(cell); cell.className="basiccell smallertext"; cell.style.width="20px"; cell.id="resistcell_"+i;
+		var fifth=Math.round((deftotals[i]-min)/diff*5);
+		cell.innerHTML=deftotals[i];
+		cell.style.backgroundColor=gradientcolours[fifth];
+		}
+	
+	}
+	
+function overviewCalc(row) 
+	{
+	if(mypokemon[row][6]==1) document.getElementById("table_pokemonattacktype_"+row).style.backgroundColor="#dd7e6b";
+		else if(mypokemon[row][6]==2) document.getElementById("table_pokemonattacktype_"+row).style.backgroundColor="#9fc5e8";
+		else document.getElementById("table_pokemonattacktype_"+row).style.backgroundColor="#ffffff";
+	if(mypokemon[row][7]==1) document.getElementById("table_pokemondefensetype_"+row).style.backgroundColor="#e6b8af";
+		else if(mypokemon[row][7]==2) { document.getElementById("table_pokemondefensetype_"+row).style.backgroundColor="#85200c"; document.getElementById("table_pokemondefensetype_"+row).style.color="white" }
+		else if(mypokemon[row][7]==3) document.getElementById("table_pokemondefensetype_"+row).style.backgroundColor="#c9daf8";
+		else if(mypokemon[row][7]==4) { document.getElementById("table_pokemondefensetype_"+row).style.backgroundColor="#1155cc"; document.getElementById("table_pokemondefensetype_"+row).style.color="white" }
+		else if(mypokemon[row][7]==5) document.getElementById("table_pokemondefensetype_"+row).style.backgroundColor="#ffd4ff";
+		else if(mypokemon[row][7]==6) { document.getElementById("table_pokemondefensetype_"+row).style.backgroundColor="#a64d79"; document.getElementById("table_pokemondefensetype_"+row).style.color="white" }
+		
+	for(var i=0;i<=17;i++) 
+		{
+		var totaleffectiveness = TYPECHART[i][mypokemon[row][1]];
+		if(mypokemon[row][2]>-1) totaleffectiveness=totaleffectiveness*TYPECHART[i][mypokemon[row][2]];
+		document.getElementById("table_typecell_"+row+"_"+i).innerHTML=totaleffectiveness;
+		
+		if(mypokemon[row][4]>-1) { totaleffectiveness=totaleffectiveness*abilityReduction(row,i,mypokemon[row][4],i); }
+		var thescore=0;
+		if(totaleffectiveness<=0.25 && totaleffectiveness!=0) { thescore=1; deftotals[i]++; } ; if(totaleffectiveness==0.5) { thescore=4; deftotals[i]++; } if(totaleffectiveness==2) thescore=2; if(totaleffectiveness>=4) thescore=3; if(totaleffectiveness==0) { thescore=5; deftotals[i]++; } if(totaleffectiveness==1) { thescore=6; }
+		if(thescore>0) scoreCell(row,i,thescore);
+		}
+	
+	}
+	
+function abilityReduction(row,col,ability,attacktype)
+	{
+	var thecell=document.getElementById("table_typecell_"+row+"_"+col);
+	if((ability==0 && attacktype==10) ||
+		(ability==1 && attacktype==4) ||
+		(ability==2 && attacktype==9) ||
+		(ability==5 && attacktype==4) ||
+		(ability==6 && attacktype==12) ||
+		(ability==7 && attacktype==12) ||
+		(ability==9 && attacktype==11) ||
+		(ability==10 && attacktype==10) ||
+		(ability==12 && attacktype==12) ||
+		(ability==13 && attacktype==10) ||
+		(ability==15 && attacktype==9)
+	) 
+		{ thecell.innerHTML="0"; return (0) }
+	else if(ability==0 && attacktype==9) 
+		{ 
+		var cellval=thecell.innerHTML;
+		thecell.innerHTML=cellval+"+25%";
+		thecell.style.fontSize=8;
+		return (1) 
+		}
+	else if(ability==3 && attacktype==9) 
+		{ 
+		var cellval=thecell.innerHTML;
+		thecell.innerHTML=cellval+"x2";
+		thecell.style.fontSize=8;
+		return (2) 
+		}
+	else if((ability==4 && attacktype==9) ||
+		(ability==8 && attacktype==7) ||
+		(ability==11 && (attacktype==9 || attacktype==14)) ||
+		(ability==14 && attacktype==9)
+	)
+		{ 
+		var cellval=thecell.innerHTML;
+		thecell.innerHTML=cellval+"-50%";
+		thecell.style.fontSize=8;
+		return (0.5) 
+		}
+	else return (1);
+	}
+	
+function scoreCell(row,col,score) 
+	{
+	var thecell=document.getElementById("table_typecell_"+row+"_"+col);
+	if(score==1) { thecell.style.backgroundColor='#93c47d'; thecell.style.color='#274e13'; }
+	if(score==2) { thecell.style.backgroundColor='#ffcece'; thecell.style.color='#660000'; }
+	if(score==3) { thecell.style.backgroundColor='#cc0000'; thecell.style.color='#ea9999'; }
+	if(score==4) { thecell.style.backgroundColor='#d9ead3'; thecell.style.color='#38761d'; }
+	if(score==5) { thecell.style.backgroundColor='#00ff00'; thecell.style.color='#274e13'; }
+	if(score==6) { thecell.style.backgroundColor='#ffffff'; thecell.style.color='#000000'; }
+	}
 
 
 function addPokemon() 
@@ -46,23 +284,98 @@ function addPokemon()
 	const formelementstoadd=["input_monname","dd_montype1","dd_montype2","dd_monteratype","dd_monability","txt_monnote","dd_monattacktype","dd_mondefensetype","dd_monoffmovetype1","dd_monoffmovetype2","dd_monoffmovetype3","dd_monoffmovetype4"];
 	for (var i=0;i<=formelementstoadd.length-1;i++) 
 		{
+		console.log("coucou "+formelementstoadd[i]);
 		mypokemon[a].push(document.getElementById(formelementstoadd[i]).value);
 		}
 	generateCookie();
+	updatePokemonList("display");
+	generateAddForm();
 	}
+	
+function editConfirm(row)
+	{
+	const elements=["input_monname_edit","dd_montype1_edit","dd_montype2_edit","dd_monteratype_edit","dd_monability_edit","txt_monnote_edit","dd_monattacktype_edit","dd_mondefensetype_edit","dd_monoffmovetype1_edit","dd_monoffmovetype2_edit","dd_monoffmovetype3_edit","dd_monoffmovetype4_edit"];
+	for(var i=0;i<=elements.length-1;i++) 
+		{
+		mypokemon[row][i]=document.getElementById(elements[i]).value;
+		console.log(mypokemon[row][i]);
+		}
+	generateCookie();
+	updatePokemonList("display");	
+	}
+	
+function spacer(node) { var spacer= document.createElement("span"); node.appendChild(spacer); spacer.innerHTML=" | "; }
+	
+function updatePokemonList(mode) 
+	{
+	document.getElementById("pokemonlist").innerHTML="";
+	for (var i=0;i<=mypokemon.length-1;i++) 
+		{
+		var therow=document.createElement("div");
+		therow.id="pokemonlistrow"+i;
+		document.getElementById("pokemonlist").appendChild(therow);
+		console.log("mode: "+mode+" / row: "+mode.split("-")[1]+" / i: "+i);
+		if(mode.split("-")[0]=="edit") editmode=true; else editmode=false;
+		if(editmode==true && mode.split("-")[1]==i) { generateAddForm("edit",mode.split("-")[1]);  }
+			else 
+				{
+				var button_edit = document.createElement("input"); button_edit.id="button_edit-"+i; button_edit.type="button"; button_edit.value="Edit"; button_edit.onclick=function(){updatePokemonList(this.id.split("_")[1])}; document.getElementById("pokemonlistrow"+i).appendChild(button_edit);
+				spacer(therow);
+				var span=document.createElement("span"); span.innerHTML=mypokemon[i][0]; therow.appendChild(span); // Name
+				spacer(therow);
+				var span=document.createElement("span"); therow.appendChild(span); 
+				if(mypokemon[i][2]==-1) span.innerHTML="Type: "+ALLTYPES[mypokemon[i][1]];
+					else span.innerHTML="Types: "+ALLTYPES[mypokemon[i][1]]+"/"+ALLTYPES[mypokemon[i][2]];
+				spacer(therow);
+				var span=document.createElement("span"); therow.appendChild(span); 
+				span.innerHTML="Tera: "+ALLTYPES[mypokemon[i][3]];
+				spacer(therow);
+				if(mypokemon[i][4]>-1) { var span=document.createElement("span"); therow.appendChild(span); span.innerHTML="Ability: "+ABILITIES[mypokemon[i][4]]; spacer(therow); }
+				if(mypokemon[i][5]!="") { var span=document.createElement("span"); therow.appendChild(span); span.innerHTML="Note: "+mypokemon[i][5]; spacer(therow); }
+				var span=document.createElement("span"); therow.appendChild(span); 
+				span.innerHTML="Att: "+ATTACKTYPEMON[mypokemon[i][6]];
+				spacer(therow);
+				var span=document.createElement("span"); therow.appendChild(span); 
+				span.innerHTML="Best def: "+DEFENSETYPEMON[mypokemon[i][7]];
+				if(mypokemon[i][8]==-1) {  }
+					else 
+						{
+						spacer(therow);
+						var span=document.createElement("span"); therow.appendChild(span); 
+						if(mypokemon[i][9]==-1) span.innerHTML="Attack type available: "+ALLTYPES[mypokemon[i][8]];
+							else if(mypokemon[i][10]==-1) span.innerHTML="Attack types available: "+ALLTYPES[mypokemon[i][8]]+", "+ALLTYPES[mypokemon[i][9]];
+								else if(mypokemon[i][11]==-1) span.innerHTML="Attack types available: "+ALLTYPES[mypokemon[i][8]]+", "+ALLTYPES[mypokemon[i][9]]+", "+ALLTYPES[mypokemon[i][10]];
+									else span.innerHTML="Attack types available: "+ALLTYPES[mypokemon[i][8]]+", "+ALLTYPES[mypokemon[i][9]]+", "+ALLTYPES[mypokemon[i][10]]+", "+ALLTYPES[mypokemon[i][11]];
+						}
+				}
+		}
+	}
+	
+if(thecookie!="") updatePokemonList("display");
 
 function generateCookie() 
 	{
+	var now = new Date();
+	var time = now.getTime();
+	var expireTime = time + 1000*36000;
+	now.setTime(expireTime);
+	
 	var cookiecontents="";
 	for (var i=0;i<=mypokemon.length-1;i++) 
 		{
 		for (var j=0;j<=mypokemon[i].length-1;j++) 
 			{
-			cookiecontents+=mypokemon[i][j];+"¤¤";
+			console.log(mypokemon[i][j]);
+			cookiecontents=cookiecontents+mypokemon[i][j];
+			if(j<mypokemon[i].length-1) cookiecontents=cookiecontents+"~~";
+			console.log(cookiecontents);
 			}
-		cookiecontents+="££";
+		if(i<mypokemon.length-1) cookiecontents+="@@";
 		}
+	console.log(cookiecontents);
+	cookiecontents += ';expires='+expireTime+';path=/';
 	document.cookie=cookiecontents;
 	}
+	
 
 </script>
