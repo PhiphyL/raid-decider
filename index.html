@@ -122,7 +122,11 @@ const RAIDBOSSDATA= [
 ];
 </script>
 
-<div id="div_thetable">
+<div id="div_thedecidertable">
+
+</div>
+
+<div id="div_theoverviewtable">
 
 </div>
 
@@ -190,12 +194,36 @@ generateAddForm();
  
 <script>
 
-createTypeTable();
+createTypeTable(overview);
 
 function createTypeTable(mode) 
 	{
-	var thetable=document.getElementById("div_thetable"); thetable.className="divtable";
+	if(mode=="overview") { var thetable=document.getElementById("div_theoverviewtable"); thetable.className="divtable"; }
+	else if(mode=="decider") { var thetable=document.getElementById("div_thedecidertable"); thetable.className="divtable"; }
 	
+	if(mode=="decider") 
+		{
+		var div_bossheaders = document.createElement("div"); div_bossheaders.id="div_bossheaders"; thetable.appendChild(div_bossheaders); div_bossheaders.style.clear="both";
+		var bossheader_namedd = document.createElement("div"); bossheader_namedd.id="bossheader_namedd"; div_tableheaders.appendChild(bossheader_namedd); bossheader_namedd.style.width="100px"; bossheader_namedd.className="basiccell";
+			var bossheader_namedropdown = document.createElement("select"); 
+			bossheader_namedropdown.id="bossheader_namedropdown";
+			var option = document.createElement("option"); 
+			option.value="-1"; 
+			option.innerHTML="Select raid boss"; 
+			bossheader_namedropdown.appendChild(option);
+			for (var j=1;j<=RAIDBOSSNAMES.length-1;j++) { var option = document.createElement("option"); option.value=RAIDBOSSNAMES[j][0]; option.innerHTML=RAIDBOSSNAMES[j][1];  bossheader_namedropdown.appendChild(option); }
+			bossheader_namedd.appendChild(bossheader_namedropdown);
+		var bossheader_teradd = document.createElement("div"); bossheader_teradd.id="bossheader_teradd"; div_tableheaders.appendChild(bossheader_teradd); bossheader_teradd.style.width="80px"; bossheader_teradd.className="basiccell";
+			var bossheader_teradropdown = document.createElement("select"); 
+			bossheader_teradropdown.id="bossheader_teradropdown";
+			var option = document.createElement("option"); 
+			option.value="-1"; 
+			option.innerHTML="Terq type"; 
+			bossheader_teradropdown.appendChild(option);
+			for (var j=1;j<=RAIDBOSSNAMES.length-1;j++) { var option = document.createElement("option"); option.value=ALLTYPES[j][0]; option.innerHTML=ALLTYPES[j][1];  bossheader_teradropdown.appendChild(option); }
+			bossheader_teradd.appendChild(bossheader_teradropdown);
+		}
+		
 	var div_tableheaders = document.createElement("div"); div_tableheaders.id="div_tableheaders"; thetable.appendChild(div_tableheaders); div_tableheaders.style.clear="both";
 	var header_pokemonname = document.createElement("div"); header_pokemonname.id="header_pokemonname"; div_tableheaders.appendChild(header_pokemonname); header_pokemonname.style.width="100px"; header_pokemonname.className="basiccell";
 		header_pokemonname.innerHTML="Name";
@@ -212,16 +240,17 @@ function createTypeTable(mode)
 	var header_elementcells = document.createElement("div"); header_elementcells.id="header_elementcells"; div_tableheaders.appendChild(header_elementcells); header_elementcells.className="basiccell";
 	for(var j=0;j<=17;j++) 
 		{
-		var cell=document.createElement("div"); header_elementcells.appendChild(cell); cell.className="basiccell smallertext"; cell.style.width="20px"; cell.id="header_typecell_"+j;
+		var cell=document.createElement("div"); cell.className="basiccell smallertext"; cell.style.width="20px"; cell.id="header_typecell_"+j;
 		cell.innerHTML=ALLTYPES[j].charAt(0);
 		cell.style.color="#ffffff";
 		cell.style.backgroundColor=TYPECOLOR[j];
+		if(mode=="overview") header_elementcells.appendChild(cell);
 		}
 	var header_pokemonattacktype = document.createElement("div"); header_pokemonattacktype.id="header_pokemonattacktype"; div_tableheaders.appendChild(header_pokemonattacktype); header_pokemonattacktype.style.width="200px"; header_pokemonattacktype.className="basiccell";
 		header_pokemonattacktype.innerHTML="Attack type";
 	var header_pokemondefensetype = document.createElement("div"); header_pokemondefensetype.id="header_pokemondefensetype"; div_tableheaders.appendChild(header_pokemondefensetype); header_pokemondefensetype.style.width="200px"; header_pokemondefensetype.className="basiccell";
 		header_pokemondefensetype.innerHTML="Best defense";
-	deftotals=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+	if(mode=="overview") deftotals=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 	for(var i=0;i<=mypokemon.length-1;i++) 
 		{
 		var div_tablerow = document.createElement("div"); div_tablerow.id="div_tablerow_"+i; thetable.appendChild(div_tablerow); div_tablerow.style.clear="both";
@@ -245,31 +274,35 @@ function createTypeTable(mode)
 			table_pokemondefensetype.innerHTML=DEFENSETYPEMON[mypokemon[i][7]];
 		for(var j=0;j<=17;j++) 
 			{
-			var cell=document.createElement("div"); table_elementcells.appendChild(cell); cell.className="basiccell smallertext"; cell.style.width="20px"; cell.id="table_typecell_"+i+"_"+j;
+			var cell=document.createElement("div"); cell.className="basiccell smallertext"; cell.style.width="20px"; cell.id="table_typecell_"+i+"_"+j;
 			if(((j+2)%2==0)) cell.style.backgroundColor="#1fe2f3"; else cell.style.backgroundColor="#3fc5e8";
+			if(mode=="overview") table_elementcells.appendChild(cell); 
 			}
-		overviewCalc(i);
+		if(mode=="overview") overviewCalc(i);
 		}
-	var min = Math.min(...deftotals);
-	var max = Math.max(...deftotals);
-	var diff=max-min;
-
-	const gradientcolours=["#e67c73","#ffe9e9","#ffe9e9","#b7e1cd","#58bb8a","#58bb8a"];
-
-	var div_tablerow = document.createElement("div"); div_tablerow.id="div_tablerow_"+i; document.getElementById("div_thetable").appendChild(div_tablerow); div_tablerow.style.clear="both";
-	var width=parseInt(document.getElementById("table_pokemonname_1").style.width.split("px")[0])+parseInt(document.getElementById("table_pokemontype1_1").style.width.split("px")[0])+parseInt(document.getElementById("table_pokemontype2_1").style.width.split("px")[0])+parseInt(document.getElementById("table_pokemonteratype_1").style.width.split("px")[0])+parseInt(document.getElementById("table_pokemonability_1").style.width.split("px")[0])+parseInt(document.getElementById("table_pokemonnote_1").style.width.split("px")[0]);
-	console.log(width);
-	var resistdiv = document.createElement("div"); resistdiv.id="resistdiv"; div_tablerow.appendChild(resistdiv); resistdiv.style.width=width+"px"; resistdiv.className="basiccell";
-	var resistcells = document.createElement("div"); resistcells.id="resistcells"; div_tablerow.appendChild(resistcells); resistcells.className="basiccell";
-	resistdiv.innerHTML="Total resist/immnune:";
-	for(var i=0;i<=17;i++) 
+		
+	if(mode=="overview") 
 		{
-		var cell=document.createElement("div"); resistcells.appendChild(cell); cell.className="basiccell smallertext"; cell.style.width="20px"; cell.id="resistcell_"+i;
-		var fifth=Math.round((deftotals[i]-min)/diff*5);
-		cell.innerHTML=deftotals[i];
-		cell.style.backgroundColor=gradientcolours[fifth];
+		var min = Math.min(...deftotals);
+		var max = Math.max(...deftotals);
+		var diff=max-min;
+
+		const gradientcolours=["#e67c73","#ffe9e9","#ffe9e9","#b7e1cd","#58bb8a","#58bb8a"];
+
+		var div_tablerow = document.createElement("div"); div_tablerow.id="div_tablerow_"+i; document.getElementById("div_thetable").appendChild(div_tablerow); div_tablerow.style.clear="both";
+		var width=parseInt(document.getElementById("table_pokemonname_1").style.width.split("px")[0])+parseInt(document.getElementById("table_pokemontype1_1").style.width.split("px")[0])+parseInt(document.getElementById("table_pokemontype2_1").style.width.split("px")[0])+parseInt(document.getElementById("table_pokemonteratype_1").style.width.split("px")[0])+parseInt(document.getElementById("table_pokemonability_1").style.width.split("px")[0])+parseInt(document.getElementById("table_pokemonnote_1").style.width.split("px")[0]);
+		console.log(width);
+		var resistdiv = document.createElement("div"); resistdiv.id="resistdiv"; div_tablerow.appendChild(resistdiv); resistdiv.style.width=width+"px"; resistdiv.className="basiccell";
+		var resistcells = document.createElement("div"); resistcells.id="resistcells"; div_tablerow.appendChild(resistcells); resistcells.className="basiccell";
+		resistdiv.innerHTML="Total resist/immnune:";
+		for(var i=0;i<=17;i++) 
+			{
+			var cell=document.createElement("div"); resistcells.appendChild(cell); cell.className="basiccell smallertext"; cell.style.width="20px"; cell.id="resistcell_"+i;
+			var fifth=Math.round((deftotals[i]-min)/diff*5);
+			cell.innerHTML=deftotals[i];
+			cell.style.backgroundColor=gradientcolours[fifth];
+			}
 		}
-	
 	}
 	
 function overviewCalc(row) 
