@@ -193,8 +193,9 @@ generateAddForm();
 </script>
  
 <script>
-
-createTypeTable(overview);
+var selectedraidboss=-1;
+var selectedbosstera=-1;
+createTypeTable(decider);
 
 function createTypeTable(mode) 
 	{
@@ -204,7 +205,7 @@ function createTypeTable(mode)
 	if(mode=="decider") 
 		{
 		var div_bossheaders = document.createElement("div"); div_bossheaders.id="div_bossheaders"; thetable.appendChild(div_bossheaders); div_bossheaders.style.clear="both";
-		var bossheader_namedd = document.createElement("div"); bossheader_namedd.id="bossheader_namedd"; div_tableheaders.appendChild(bossheader_namedd); bossheader_namedd.style.width="100px"; bossheader_namedd.className="basiccell";
+		var bossheader_namedd = document.createElement("div"); bossheader_namedd.id="bossheader_namedd"; div_bossheaders.appendChild(bossheader_namedd); bossheader_namedd.style.width="140px"; bossheader_namedd.className="basiccell";
 			var bossheader_namedropdown = document.createElement("select"); 
 			bossheader_namedropdown.id="bossheader_namedropdown";
 			var option = document.createElement("option"); 
@@ -213,15 +214,35 @@ function createTypeTable(mode)
 			bossheader_namedropdown.appendChild(option);
 			for (var j=1;j<=RAIDBOSSNAMES.length-1;j++) { var option = document.createElement("option"); option.value=RAIDBOSSNAMES[j][0]; option.innerHTML=RAIDBOSSNAMES[j][1];  bossheader_namedropdown.appendChild(option); }
 			bossheader_namedd.appendChild(bossheader_namedropdown);
-		var bossheader_teradd = document.createElement("div"); bossheader_teradd.id="bossheader_teradd"; div_tableheaders.appendChild(bossheader_teradd); bossheader_teradd.style.width="80px"; bossheader_teradd.className="basiccell";
+			if(selectedraidboss>-1) bossheader_namedropdown.value=selectedraidboss;
+		var bossheader_teradd = document.createElement("div"); bossheader_teradd.id="bossheader_teradd"; div_bossheaders.appendChild(bossheader_teradd); bossheader_teradd.style.width="80px"; bossheader_teradd.className="basiccell";
 			var bossheader_teradropdown = document.createElement("select"); 
 			bossheader_teradropdown.id="bossheader_teradropdown";
 			var option = document.createElement("option"); 
 			option.value="-1"; 
-			option.innerHTML="Terq type"; 
+			option.innerHTML="Tera type"; 
 			bossheader_teradropdown.appendChild(option);
 			for (var j=1;j<=RAIDBOSSNAMES.length-1;j++) { var option = document.createElement("option"); option.value=ALLTYPES[j][0]; option.innerHTML=ALLTYPES[j][1];  bossheader_teradropdown.appendChild(option); }
 			bossheader_teradd.appendChild(bossheader_teradropdown);
+			if(selectedbosstera>-1) bossheader_teradropdown.value=selectedbosstera;
+		var bossheader_confirm = document.createElement("div"); bossheader_confirm.id="bossheader_confirm"; div_bossheaders.appendChild(bossheader_confirm); bossheader_confirm.style.width="100px"; bossheader_confirm.className="basiccell";
+			var bossheader_confirmbutton = document.createElement("input"); bossheader_confirmbutton.type="button"; bossheader_confirmbutton.value="Confirm"; bossheader_confirmbutton.id="bossheader_confirmbutton"; bossheader_confirm.appendChild(bossheader_confirmbutton); bossheader_confirm.style.width="100px"; bossheader_confirm.className="basiccell";
+			bossheader_confirmbutton.onclick=function(){selectedraidboss=document.getElementById("bossheader_namedropdown").value; selectedbosstera=document.getElementById("bossheader_teradropdown").value; createTypeTable("decider")};
+		if(selectedraidboss>-1) 
+			{
+			var totalcols=0;
+			if(RAIDBOSSDATA[selectedraidboss][4]==-1) totalcols=1;
+			if(RAIDBOSSDATA[selectedraidboss][5]==-1) totalcols=2;
+			if(RAIDBOSSDATA[selectedraidboss][6]==-1) totalcols=3;
+			if(RAIDBOSSDATA[selectedraidboss][7]==-1) totalcols=4;
+			if(RAIDBOSSDATA[selectedraidboss][4]=="Tera" && (selectedbosstera==selectedraidboss][5] || selectedbosstera==selectedraidboss][6] || selectedbosstera==selectedraidboss][7])) totalcols--;
+			}
+		var bossheader_note = document.createElement("div"); bossheader_note.id="bossheader_note"; div_bossheaders.appendChild(bossheader_note); bossheader_note.style.width=(250+totalcols*20+200)+"px"; bossheader_note.className="basiccell";
+			if(selectedraidboss>-1) bossheader_note.innerHTML=RAIDBOSSDATA[selectedraidboss][1];
+		var bossheader_defense = document.createElement("div"); bossheader_defense.id="bossheader_defense"; div_bossheaders.appendChild(bossheader_defense); bossheader_defense.style.width="200px"; bossheader_defense.className="basiccell";
+			if(selectedraidboss>-1) bossheader_defense.innerHTML=RAIDBOSSDEFENSETEXT[RAIDBOSSDATA[selectedraidboss][3]];
+		var bossheader_attack = document.createElement("div"); bossheader_attack.id="bossheader_attack"; div_bossheaders.appendChild(bossheader_attack); bossheader_attack.style.width="200px"; bossheader_attack.className="basiccell";
+			if(selectedraidboss>-1) bossheader_attack.innerHTML=RAIDBOSSATTACKTEXT[RAIDBOSSDATA[selectedraidboss][2]];
 		}
 		
 	var div_tableheaders = document.createElement("div"); div_tableheaders.id="div_tableheaders"; thetable.appendChild(div_tableheaders); div_tableheaders.style.clear="both";
@@ -246,11 +267,18 @@ function createTypeTable(mode)
 		cell.style.backgroundColor=TYPECOLOR[j];
 		if(mode=="overview") header_elementcells.appendChild(cell);
 		}
+		
+	if(mode=="decider") {
+		var header_pokemoneffective = document.createElement("div"); header_pokemoneffective.id="header_pokemoneffective"; div_tableheaders.appendChild(header_pokemoneffective); header_pokemoneffective.style.width="200px"; header_pokemoneffective.className="basiccell";
+		header_pokemoneffective.innerHTML="Effective attacks?";
+		}
 	var header_pokemonattacktype = document.createElement("div"); header_pokemonattacktype.id="header_pokemonattacktype"; div_tableheaders.appendChild(header_pokemonattacktype); header_pokemonattacktype.style.width="200px"; header_pokemonattacktype.className="basiccell";
 		header_pokemonattacktype.innerHTML="Attack type";
 	var header_pokemondefensetype = document.createElement("div"); header_pokemondefensetype.id="header_pokemondefensetype"; div_tableheaders.appendChild(header_pokemondefensetype); header_pokemondefensetype.style.width="200px"; header_pokemondefensetype.className="basiccell";
 		header_pokemondefensetype.innerHTML="Best defense";
+		
 	if(mode=="overview") deftotals=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+		
 	for(var i=0;i<=mypokemon.length-1;i++) 
 		{
 		var div_tablerow = document.createElement("div"); div_tablerow.id="div_tablerow_"+i; thetable.appendChild(div_tablerow); div_tablerow.style.clear="both";
@@ -268,6 +296,10 @@ function createTypeTable(mode)
 		var table_pokemonnote = document.createElement("div"); table_pokemonnote.id="table_pokemonnote_"+i; div_tablerow.appendChild(table_pokemonnote); table_pokemonnote.style.width="250px"; table_pokemonnote.className="basiccell";
 			table_pokemonnote.innerHTML=mypokemon[i][5];
 		var table_elementcells = document.createElement("div"); table_elementcells.id="table_elementcells_"+i; div_tablerow.appendChild(table_elementcells); table_elementcells.className="basiccell";
+		if(mode=="decider") 
+			{
+			var table_pokemoneffective = document.createElement("div"); table_pokemoneffective.id="table_pokemoneffective_"+i; div_tablerow.appendChild(table_pokemoneffective); table_pokemoneffective.style.width="200px"; table_pokemoneffective.className="basiccell";
+			}
 		var table_pokemonattacktype = document.createElement("div"); table_pokemonattacktype.id="table_pokemonattacktype_"+i; div_tablerow.appendChild(table_pokemonattacktype); table_pokemonattacktype.style.width="200px"; table_pokemonattacktype.className="basiccell";
 			table_pokemonattacktype.innerHTML=ATTACKTYPEMON[mypokemon[i][6]];
 		var table_pokemondefensetype = document.createElement("div"); table_pokemondefensetype.id="table_pokemondefensetype_"+i; div_tablerow.appendChild(table_pokemondefensetype); table_pokemondefensetype.style.width="200px"; table_pokemondefensetype.className="basiccell";
