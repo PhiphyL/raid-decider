@@ -1,7 +1,18 @@
+<meta charset="UTF-8">
+
 <style>
 .basiccell {overflow: hidden; display:inline-flex;}
 .smallertext {font-size:10px;}
 .divtable {}
+.formelements { font-size:2em; height:65px; width:100%; text-align:center; }
+.formline { display:flex;text-align:center;font-size:1.2em; padding:10px }
+.formelementtitle { height:30px; align-items:center;justify-content:center }
+.justifycontentcenter { justify-content:center }
+.horizontal { display:flex; flex-direction:row }
+.vertical { display:flex; flex-direction:column }
+.inshadow { box-shadow:inset 0 0 10px 5px #ffffff; }
+.inshadowstrong { box-shadow:inset 0 0 4px 1px #00ff00; }
+.inshadowweak { box-shadow:inset 0 0 4px 1px #ff0000; }
 </style>
 
 <script>
@@ -122,81 +133,137 @@ const RAIDBOSSDATA= [
 ["Volcarona", "Can burn. Can boost its SPDEF. Has Light Screen. Can boost its SPATK, SPDEF, SPD.", 2, 1, 6, 9, 2, -1]
 ];
 </script>
+<div id="thedocumentdiv" style="max-width:970px;margin-left:auto;margin-right:auto;">
+	<div id="topmenu" style="width:100%;height:100px;background-color:#000000;display:flex;font-size:24px;">
 
-<div id="div_thedecidertable">
+		<div id="topmenu_listadd" style="width:33%;background-color:#9d9dff;display: flex;align-items:center;justify-content:center">Your Pokemon</div>
+		<div id="topmenu_decider" style="width:34%;background-color:#ff9d9d;display: flex;align-items:center;justify-content:center">Raid Decider</div>
+		<div id="topmenu_overview" style="width:33%;background-color:#9dff9d;display: flex;align-items:center;justify-content:center">Overview</div>
+		
+	</div>
 
+	<div id="div_pokemonlistadd" style="display:none;background-color:#ffeaea;padding-top:20px">
+
+		<div id="div_pokemonlistadd_add" style="background-color:#eaffea"></div>
+		<div id="div_pokemonlistadd_list" style="display:flex;flex-direction:column-reverse;background-color:#eaeaff"></div>
+		
+	</div>
+
+	<div id="div_thedecidertable" style="display:none";>
+	2
+	</div>
+
+	<div id="div_theoverviewtable" style="display:none";>
+	3
+	</div>
 </div>
 
-<div id="div_theoverviewtable">
 
-</div>
 
-<div id="pokemonlist">
-
-</div>
-
-<div id="addpokemonform">
-
-</div>
 
 <script>
+
+////////////// TEMP //////
+changePage(1);
+////// TEMP //////////////
+
+document.getElementById("topmenu_listadd").onclick=function(){changePage(1)};
+document.getElementById("topmenu_decider").onclick=function(){changePage(2)};
+document.getElementById("topmenu_overview").onclick=function(){changePage(3)};
+
+function changePage(num) 
+	{
+	document.getElementById("div_pokemonlistadd").style.display="none";
+	document.getElementById("div_thedecidertable").style.display="none";
+	document.getElementById("div_theoverviewtable").style.display="none";
+	if(num==1) document.getElementById("div_pokemonlistadd").style.display="block";
+	if(num==2) document.getElementById("div_thedecidertable").style.display="inline";
+	if(num==3) document.getElementById("div_theoverviewtable").style.display="inline";
+	}
 
 function generateAddForm(mode,row)
 	{
 	
 	if(mode=="edit") var theform=document.getElementById("pokemonlistrow"+row);
-		else var theform=document.getElementById("addpokemonform");
+		else var theform=document.getElementById("div_pokemonlistadd_add");
 	theform.innerHTML="";
-	var input_monname = document.createElement("input"); input_monname.id="input_monname"; theform.appendChild(input_monname); if(mode=="edit") input_monname.id+="_edit";
-	var dd_montype1 = document.createElement("select"); dd_montype1.id="dd_montype1"; theform.appendChild(dd_montype1); if(mode=="edit") dd_montype1.id+="_edit";
-	for (var i=0;i<=17;i++) { var option = document.createElement("option"); option.value=DD_TYPES[i][0]; option.innerHTML=DD_TYPES[i][1]; dd_montype1.appendChild(option); }
-	var dd_montype2 = document.createElement("select"); dd_montype2.id="dd_montype2"; theform.appendChild(dd_montype2); if(mode=="edit") dd_montype2.id+="_edit";
-	var option = document.createElement("option"); option.value="-1"; option.innerHTML="No type"; dd_montype2.appendChild(option);
-	for (var i=0;i<=17;i++) { var option = document.createElement("option"); option.value=DD_TYPES[i][0]; option.innerHTML=DD_TYPES[i][1]; dd_montype2.appendChild(option); }
-	var dd_monteratype = document.createElement("select"); dd_monteratype.id="dd_monteratype"; theform.appendChild(dd_monteratype); if(mode=="edit") dd_monteratype.id+="_edit";
-	for (var i=0;i<=17;i++) { var option = document.createElement("option"); option.value=DD_TYPES[i][0]; option.innerHTML=DD_TYPES[i][1]; dd_monteratype.appendChild(option); }
-	var dd_monability = document.createElement("select"); dd_monability.id="dd_monability"; theform.appendChild(dd_monability); if(mode=="edit") dd_monability.id+="_edit";
-	for (var i=0;i<=DD_ABILITY.length-1;i++) { var option = document.createElement("option"); option.value=DD_ABILITY[i][0]; option.innerHTML=DD_ABILITY[i][1]; dd_monability.appendChild(option); }
-	theform.appendChild(document.createElement("br"))
-	var txt_monnote = document.createElement("textarea"); txt_monnote.id="txt_monnote"; theform.appendChild(txt_monnote); if(mode=="edit") txt_monnote.id+="_edit";
-	theform.appendChild(document.createElement("br"))
-	var dd_monattacktype = document.createElement("select"); dd_monattacktype.id="dd_monattacktype"; theform.appendChild(dd_monattacktype); if(mode=="edit") dd_monattacktype.id+="_edit";
-	for (var i=0;i<=DD_ATTACKPOKEMON.length-1;i++) { var option = document.createElement("option"); option.value=DD_ATTACKPOKEMON[i][0]; option.innerHTML=DD_ATTACKPOKEMON[i][1]; dd_monattacktype.appendChild(option); }
-	var dd_mondefensetype = document.createElement("select"); dd_mondefensetype.id="dd_mondefensetype"; theform.appendChild(dd_mondefensetype); if(mode=="edit") dd_mondefensetype.id+="_edit";
-	for (var i=0;i<=DD_DEFENSEPOKEMON.length-1;i++) { var option = document.createElement("option"); option.value=DD_DEFENSEPOKEMON[i][0]; option.innerHTML=DD_DEFENSEPOKEMON[i][1]; dd_mondefensetype.appendChild(option); }
-	theform.appendChild(document.createElement("br"))
-	for(var i=1;i<=4;i++) 
-		{
-		var dd_monoffmovetype = document.createElement("select"); 
-		dd_monoffmovetype.id="dd_monoffmovetype"+i; if(mode=="edit") dd_monoffmovetype.id+="_edit";
-		var option = document.createElement("option"); 
-		option.value="-1"; 
-		option.innerHTML="No move"; 
-		dd_monoffmovetype.appendChild(option);
-		for (var j=0;j<=17;j++) { var option = document.createElement("option"); option.value=DD_TYPES[j][0]; option.innerHTML=DD_TYPES[j][1];  dd_monoffmovetype.appendChild(option); }
-		theform.appendChild(dd_monoffmovetype);
-		if(mode=="edit") dd_monoffmovetype.value=mypokemon[row][7+i]; 
-		}
+	var div_form_firstline=document.createElement("div"); div_form_firstline.id="div_form_firstline"; theform.appendChild(div_form_firstline); div_form_firstline.className="formline";
+		var div_form_monname= document.createElement("div"); div_form_monname.id="div_form_monname"; div_form_firstline.appendChild(div_form_monname); div_form_monname.style.width="50%"; div_form_monname.className="";
+			var title=document.createElement("div"); title.innerHTML="Pokémon name"; title.className="formelementtitle"; div_form_monname.appendChild(title);
+			var input_monname = document.createElement("input"); input_monname.id="input_monname"; div_form_monname.appendChild(input_monname); if(mode=="edit") input_monname.id+="_edit"; input_monname.className="formelements";
+		var div_form_monability= document.createElement("div"); div_form_monability.id="div_form_monability"; div_form_firstline.appendChild(div_form_monability); div_form_monability.style.width="50%";	div_form_monability.className="";		
+			var title=document.createElement("div"); title.innerHTML="Ability that affects resistances"; title.className="formelementtitle"; div_form_monability.appendChild(title);
+			var dd_monability = document.createElement("select"); dd_monability.id="dd_monability"; div_form_monability.appendChild(dd_monability); if(mode=="edit") dd_monability.id+="_edit"; dd_monability.className="formelements";
+				for (var i=0;i<=DD_ABILITY.length-1;i++) { var option = document.createElement("option"); option.value=DD_ABILITY[i][0]; option.innerHTML=DD_ABILITY[i][1]; dd_monability.appendChild(option); }
+				
+	var div_form_secondline=document.createElement("div"); div_form_secondline.id="div_form_secondline"; theform.appendChild(div_form_secondline); div_form_secondline.className="formline";		
+		var div_form_montype1= document.createElement("div"); div_form_montype1.id="div_form_montype1"; div_form_secondline.appendChild(div_form_montype1); div_form_montype1.style.width="33%"; div_form_montype1.className="";
+			var title=document.createElement("div"); title.innerHTML="Type 1"; title.className="formelementtitle"; div_form_montype1.appendChild(title);
+			var dd_montype1 = document.createElement("select"); dd_montype1.id="dd_montype1"; div_form_montype1.appendChild(dd_montype1); if(mode=="edit") dd_montype1.id+="_edit"; dd_montype1.className="formelements";
+				for (var i=0;i<=17;i++) { var option = document.createElement("option"); option.value=DD_TYPES[i][0]; option.innerHTML=DD_TYPES[i][1]; dd_montype1.appendChild(option);  }
+		var div_form_montype2= document.createElement("div"); div_form_montype2.id="div_form_montype2"; div_form_secondline.appendChild(div_form_montype2); div_form_montype2.style.width="34%";	div_form_montype2.className="";		
+			var title=document.createElement("div"); title.innerHTML="Type 2 (if any)"; title.className="formelementtitle"; div_form_montype2.appendChild(title);
+			var dd_montype2 = document.createElement("select"); dd_montype2.id="dd_montype2"; div_form_montype2.appendChild(dd_montype2); if(mode=="edit") dd_montype2.id+="_edit";dd_montype2.className="formelements";
+				var option = document.createElement("option"); option.value="-1"; option.innerHTML="No type"; dd_montype2.appendChild(option);
+				for (var i=0;i<=17;i++) { var option = document.createElement("option"); option.value=DD_TYPES[i][0]; option.innerHTML=DD_TYPES[i][1]; dd_montype2.appendChild(option); }
+		var div_form_monteratype= document.createElement("div"); div_form_monteratype.id="div_form_monteratype"; div_form_secondline.appendChild(div_form_monteratype); div_form_monteratype.style.width="33%";	div_form_monteratype.className="";		
+			var title=document.createElement("div"); title.innerHTML="Tera Type"; title.className="formelementtitle"; div_form_monteratype.appendChild(title);
+			var dd_monteratype = document.createElement("select"); dd_monteratype.id="dd_monteratype"; div_form_monteratype.appendChild(dd_monteratype); if(mode=="edit") dd_monteratype.id+="_edit"; dd_monteratype.className="formelements";
+				for (var i=0;i<=17;i++) { var option = document.createElement("option"); option.value=DD_TYPES[i][0]; option.innerHTML=DD_TYPES[i][1]; dd_monteratype.appendChild(option); }
+				
+	var div_form_thirdline=document.createElement("div"); div_form_thirdline.id="div_form_thirdline"; theform.appendChild(div_form_thirdline); div_form_thirdline.className="formline";		
+		var div_form_monnote= document.createElement("div"); div_form_monnote.id="div_form_monnote"; div_form_thirdline.appendChild(div_form_monnote); div_form_monnote.style.width="100%"; div_form_monnote.className="";
+			var title=document.createElement("div"); title.innerHTML="Notes regarding this Pokémon (its status moves, role, etc...)"; title.className="formelementtitle"; div_form_monnote.appendChild(title);
+			var txt_monnote = document.createElement("textarea"); txt_monnote.id="txt_monnote"; div_form_monnote.appendChild(txt_monnote); if(mode=="edit") txt_monnote.id+="_edit"; txt_monnote.className="formelements";
+			
+	var div_form_fourthline=document.createElement("div"); div_form_fourthline.id="div_form_fourthline"; theform.appendChild(div_form_fourthline); div_form_fourthline.className="formline";
+		var div_form_monattack= document.createElement("div"); div_form_monattack.id="div_form_monattack"; div_form_fourthline.appendChild(div_form_monattack); div_form_monattack.style.width="50%"; div_form_monattack.className="";
+			var title=document.createElement("div"); title.innerHTML="What type are its offensive moves?"; title.className="formelementtitle"; div_form_monattack.appendChild(title);
+			var dd_monattacktype = document.createElement("select"); dd_monattacktype.id="dd_monattacktype"; div_form_monattack.appendChild(dd_monattacktype); if(mode=="edit") dd_monattacktype.id+="_edit"; dd_monattacktype.className="formelements";
+				for (var i=0;i<=DD_ATTACKPOKEMON.length-1;i++) { var option = document.createElement("option"); option.value=DD_ATTACKPOKEMON[i][0]; option.innerHTML=DD_ATTACKPOKEMON[i][1]; dd_monattacktype.appendChild(option); }
+		var div_form_mondefense= document.createElement("div"); div_form_mondefense.id="div_form_mondefense"; div_form_fourthline.appendChild(div_form_mondefense); div_form_mondefense.style.width="50%"; div_form_mondefense.className="";
+			var title=document.createElement("div"); title.innerHTML="What is its best defense? (and how much)"; title.className="formelementtitle"; div_form_mondefense.appendChild(title);
+			var dd_mondefensetype = document.createElement("select"); dd_mondefensetype.id="dd_mondefensetype"; div_form_mondefense.appendChild(dd_mondefensetype); if(mode=="edit") dd_mondefensetype.id+="_edit"; dd_mondefensetype.className="formelements";
+				for (var i=0;i<=DD_DEFENSEPOKEMON.length-1;i++) { var option = document.createElement("option"); option.value=DD_DEFENSEPOKEMON[i][0]; option.innerHTML=DD_DEFENSEPOKEMON[i][1]; dd_mondefensetype.appendChild(option); }
+				
+	var div_form_fifthline=document.createElement("div"); div_form_fifthline.id="div_form_fifthline"; theform.appendChild(div_form_fifthline); div_form_fifthline.className="formline"; div_form_fifthline.style.paddingBottom="0px";
+		var title=document.createElement("div"); title.innerHTML="What are the damaging types available?"; title.className="formelementtitle"; div_form_fifthline.appendChild(title); title.style.width="100%"; 
+	
+	var div_form_sixthline=document.createElement("div"); div_form_sixthline.id="div_form_sixthline"; theform.appendChild(div_form_sixthline); div_form_sixthline.className="formline"; div_form_sixthline.style.paddingTop="0px";
+		for(var i=1;i<=4;i++) 
+			{
+			var dd_monoffmovetype = document.createElement("select"); 
+			dd_monoffmovetype.style.width="100%";
+			dd_monoffmovetype.id="dd_monoffmovetype"+i; if(mode=="edit") dd_monoffmovetype.id+="_edit";
+			var option = document.createElement("option"); 
+			option.value="-1"; 
+			option.innerHTML="No move"; 
+			dd_monoffmovetype.appendChild(option);
+			for (var j=0;j<=17;j++) { var option = document.createElement("option"); option.value=DD_TYPES[j][0]; option.innerHTML=DD_TYPES[j][1];  dd_monoffmovetype.appendChild(option); }
+			div_form_sixthline.appendChild(dd_monoffmovetype);
+			dd_monoffmovetype.className="formelements";
+			if(mode=="edit") dd_monoffmovetype.value=mypokemon[row][7+i]; 
+			}
+			
+	var div_form_seventhline=document.createElement("div"); div_form_seventhline.id="div_form_seventhline"; theform.appendChild(div_form_seventhline); div_form_seventhline.className="formline justifycontentcenter";
+		
 	if(mode=="edit") 
 		{
 		input_monname.value=mypokemon[row][0]; dd_montype1.value=mypokemon[row][1]; dd_montype2.value=mypokemon[row][2]; dd_monteratype.value=mypokemon[row][3]; dd_monability.value=mypokemon[row][4];
 		txt_monnote.value=mypokemon[row][5]; dd_monattacktype.value=mypokemon[row][6]; dd_mondefensetype.value=mypokemon[row][7]; 
-		button_editconfirm = document.createElement("input"); button_editconfirm.id="button_editconfirm"; button_editconfirm.type="button"; button_editconfirm.value="Ok"; button_editconfirm.onclick=function(){editConfirm(row)}; theform.appendChild(button_editconfirm);
-		button_editcancel = document.createElement("input"); button_editcancel.id="button_cancelconfirm"; button_editcancel.type="button"; button_editcancel.value="Cancel"; button_editcancel.onclick=function(){updatePokemonList('display')}; theform.appendChild(button_editcancel);
+		button_editconfirm = document.createElement("input"); button_editconfirm.id="button_editconfirm"; button_editconfirm.type="button"; button_editconfirm.value="Ok"; button_editconfirm.onclick=function(){editConfirm(row)}; div_form_seventhline.appendChild(button_editconfirm); button_editconfirm.className="formelements"; button_editconfirm.style.width="25%";
+		button_editcancel = document.createElement("input"); button_editcancel.id="button_cancelconfirm"; button_editcancel.type="button"; button_editcancel.value="Cancel"; button_editcancel.onclick=function(){updatePokemonList('display')}; div_form_seventhline.appendChild(button_editcancel); button_editcancel.className="formelements"; button_editcancel.style.width="25%";
 		}
-		else  { var button_addconfirm = document.createElement("input"); button_addconfirm.id="button_addconfirm"; button_addconfirm.type="button"; button_addconfirm.value="Add"; button_addconfirm.onclick=function(){addPokemon()}; theform.appendChild(button_addconfirm); }
+		else  { var button_addconfirm = document.createElement("input"); button_addconfirm.id="button_addconfirm"; button_addconfirm.type="button"; button_addconfirm.value="Add"; button_addconfirm.onclick=function(){addPokemon()}; div_form_seventhline.appendChild(button_addconfirm); button_addconfirm.className="formelements"; button_addconfirm.style.width="25%"; }
 
 	}
 
 generateAddForm();
 
-
-</script>
- 
-<script>
 var selectedraidboss=-1;
 var selectedbosstera=-1;
 createTypeTable("decider");
+createTypeTable("overview");
 
 function createTypeTable(mode) 
 	{
@@ -289,6 +356,7 @@ function createTypeTable(mode)
 	for(var i=0;i<=mypokemon.length-1;i++) 
 		{
 		donotusethispokemon[i]=0;
+		var getsapass=true;
 		var div_tablerow = document.createElement("div"); div_tablerow.id="div_tablerow_"+i; thetable.appendChild(div_tablerow); div_tablerow.style.clear="both";
 		//if(((i+2)%2==0)) div_tablerow.style.backgroundColor="#cfe2f3"; else div_tablerow.style.backgroundColor="#9fc5e8";
 		div_tablerow.style.borderBottom="1px solid black";
@@ -318,7 +386,7 @@ function createTypeTable(mode)
 			{
 			var defensescore=matchDefense(RAIDBOSSDATA[selectedraidboss][3],mypokemon[i][6]);
 			scoreCell(i,-3,defensescore);
-			if(defensescore==3) donotusethispokemon[i]=1;
+			if(defensescore==3) { donotusethispokemon[i]=1; getsapass=false;}
 			var attackscore=matchAttack(RAIDBOSSDATA[selectedraidboss][2],mypokemon[i][7]);
 			scoreCell(i,-2,attackscore);
 			if(attackscore==3) donotusethispokemon[i]=1;
@@ -330,11 +398,11 @@ function createTypeTable(mode)
 			if(mode=="overview") table_elementcells.appendChild(cell); 
 				else if(mode=="decider" && selectedraidboss>-1) 
 					{
-					if(raidbossatttypes.indexOf(j)>-1 || (raidbossatttypes[0]=="Tera" && j==selectedbosstera) ) { table_elementcells.appendChild(cell); deciderEffCalc(i,j); }
+					if(raidbossatttypes.indexOf(j)>-1 || (raidbossatttypes[0]=="Tera" && j==selectedbosstera) ) { table_elementcells.appendChild(cell); if(deciderEffCalc(i,j)>0.5) getsapass=false; }
 					}
 			}
 		if(mode=="overview") overviewCalc(i);
-		if(mode=="decider" && donotusethispokemon[i]==1) div_tablerow.style.display="none";
+		if(mode=="decider" && donotusethispokemon[i]==1 && getsapass==false) div_tablerow.style.display="none";
 		}
 		
 	if(mode=="overview") 
@@ -371,6 +439,7 @@ function deciderEffCalc(row,attacktype)
 	if(totaleffectiveness<=0.25 && totaleffectiveness!=0) { thescore=1; } ; if(totaleffectiveness==0.5) { thescore=4;  } if(totaleffectiveness==2) thescore=2; if(totaleffectiveness>=4) thescore=3; if(totaleffectiveness==0) { thescore=5;  } if(totaleffectiveness==1) { thescore=6; }
 	if(thescore==2 || thescore==3) donotusethispokemon[row]=1;
 	if(thescore>0) scoreCell(row,attacktype,thescore);
+	return(totaleffectiveness);
 	}
 	
 function overviewCalc(row) 
@@ -552,17 +621,75 @@ function spacer(node) { var spacer= document.createElement("span"); node.appendC
 	
 function updatePokemonList(mode) 
 	{
-	document.getElementById("pokemonlist").innerHTML="";
+	document.getElementById("div_pokemonlistadd_list").innerHTML="";
 	for (var i=0;i<=mypokemon.length-1;i++) 
 		{
 		var therow=document.createElement("div");
-		therow.id="pokemonlistrow"+i;
-		document.getElementById("pokemonlist").appendChild(therow);
+		therow.id="pokemonlistrow"+i; 
+		document.getElementById("div_pokemonlistadd_list").appendChild(therow);
 		if(mode.split("-")[0]=="edit") editmode=true; else editmode=false;
+		if(editmode==false || (editmode==true && mode.split("-")[1]!=i)) therow.className="horizontal";
 		if(editmode==true && mode.split("-")[1]==i) { generateAddForm("edit",mode.split("-")[1]);  }
 			else 
 				{
-				var button_edit = document.createElement("input"); button_edit.id="button_edit-"+i; button_edit.type="button"; button_edit.value="Edit"; button_edit.onclick=function(){updatePokemonList(this.id.split("_")[1])}; document.getElementById("pokemonlistrow"+i).appendChild(button_edit);
+				
+				//// Edit button col
+				var col=document.createElement("div"); col.id="pokemonlistrow"+i+"_col1"; therow.appendChild(col); 
+				
+					var button_edit = document.createElement("input"); button_edit.id="button_edit-"+i; button_edit.type="button"; button_edit.value="Edit"; button_edit.onclick=function(){updatePokemonList(this.id.split("_")[1])}; col.appendChild(button_edit);
+						button_edit.style.height="100%";
+				
+				//// Name/types col 
+				var col=document.createElement("div"); col.id="pokemonlistrow"+i+"_col2"; therow.appendChild(col); col.className="vertical";
+				
+					var div=document.createElement("div"); div.id="pokemonlistrow"+i+"_name"; col.appendChild(div);
+						div.innerHTML=mypokemon[i][0];
+					var div=document.createElement("div"); div.id="pokemonlistrow"+i+"_types"; col.appendChild(div); div.className="horizontal";
+						 var img=document.createElement("img"); img.src="./types/"+mypokemon[i][1]+".png"; div.appendChild(img);
+						 if(mypokemon[i][2]>-1) { var img=document.createElement("img"); img.src="./types/"+mypokemon[i][2]+".png"; div.appendChild(img); }
+						 var teradiv=document.createElement("div"); div.appendChild(teradiv); teradiv.style.height="30px"; teradiv.style.width="30px"; teradiv.style.backgroundImage="url('./types/"+mypokemon[i][3]+".png')";  teradiv.className="inshadow";
+				
+				//// Ability/Att/Def col
+				var col=document.createElement("div"); col.id="pokemonlistrow"+i+"_col3"; therow.appendChild(col); col.className="vertical";
+				
+					if(mypokemon[i][4]>-1) 
+					{
+					var div=document.createElement("div"); div.id="pokemonlistrow"+i+"ability"; col.appendChild(div);
+					div.innerHTML="Ability: "+ABILITIES[mypokemon[i][4]];
+					}
+					
+					var divatkdef=document.createElement("div"); div.id="pokemonlistrow"+i+"atkdef"; col.appendChild(divatkdef); divatkdef.className="horizontal";
+				
+						var div=document.createElement("div"); div.id="pokemonlistrow"+i+"_atktype"; divatkdef.appendChild(div);
+							var title=document.createElement("div"); div.appendChild(title); title.innerHTML="Attacks:";
+							var imgdiv=document.createElement("div"); div.appendChild(imgdiv);
+								var imgname="phy";
+								if(mypokemon[i][6]==2) imgname="spe"; else if(mypokemon[i][6]==3) imgname="noattacks"; else if(mypokemon[i][6]==4) imgname="either";
+								var img=document.createElement("img"); img.src="./atkdef/"+imgname+".png"; imgdiv.appendChild(img);
+								
+						var div=document.createElement("div"); div.id="pokemonlistrow"+i+"_deftype"; divatkdef.appendChild(div);
+							var title=document.createElement("div"); div.appendChild(title); title.innerHTML="Best def:";
+							var imgdiv=document.createElement("div"); div.appendChild(imgdiv);
+								var imgname="phy";
+								if(mypokemon[i][7]==3 || mypokemon[i][7]==4) imgname="spe"; else if(mypokemon[i][7]==5 || mypokemon[i][7]==6) imgname="either";
+								//var img=document.createElement("img"); img.src="./atkdef/"+imgname+".png"; imgdiv.appendChild(img); img.style.width="30px"; img.style.height="15px;"
+								var deftypediv=document.createElement("div"); deftypediv.style.backgroundImage="url('./atkdef/"+imgname+".png')"; imgdiv.appendChild(deftypediv); deftypediv.style.width="30px"; deftypediv.style.height="15px"
+								if(mypokemon[i][7]==2 || mypokemon[i][7]==4 || mypokemon[i][7]==6) deftypediv.className="inshadowstrong"; else deftypediv.className="inshadowweak";
+				
+				//// Offensive types col
+				var col=document.createElement("div"); col.id="pokemonlistrow"+i+"_col4"; therow.appendChild(col); col.className="vertical";
+					var title=document.createElement("div"); col.appendChild(title); if(mypokemon[i][9]>-1) title.innerHTML="Available offensive types:"; else col.innerHTML="Available offensive type:";
+					var imgdiv=document.createElement("div"); col.appendChild(imgdiv);
+					
+						for(var j=8;j<=11;j++) { if(mypokemon[i][j]>-1) { var img=document.createElement("img"); img.src="./types/"+mypokemon[i][j]+".png"; imgdiv.appendChild(img); } }
+					
+			
+				
+				//// Note col
+				var col=document.createElement("div"); col.id="pokemonlistrow"+i+"_col5"; therow.appendChild(col);
+					col.innerHTML="Note: "+mypokemon[i][5];;
+				
+			/*	var button_edit = document.createElement("input"); button_edit.id="button_edit-"+i; button_edit.type="button"; button_edit.value="Edit"; button_edit.onclick=function(){updatePokemonList(this.id.split("_")[1])}; document.getElementById("pokemonlistrow"+i).appendChild(button_edit);
 				spacer(therow);
 				var span=document.createElement("span"); span.innerHTML=mypokemon[i][0]; therow.appendChild(span); // Name
 				spacer(therow);
@@ -589,7 +716,7 @@ function updatePokemonList(mode)
 							else if(mypokemon[i][10]==-1) span.innerHTML="Attack types available: "+ALLTYPES[mypokemon[i][8]]+", "+ALLTYPES[mypokemon[i][9]];
 								else if(mypokemon[i][11]==-1) span.innerHTML="Attack types available: "+ALLTYPES[mypokemon[i][8]]+", "+ALLTYPES[mypokemon[i][9]]+", "+ALLTYPES[mypokemon[i][10]];
 									else span.innerHTML="Attack types available: "+ALLTYPES[mypokemon[i][8]]+", "+ALLTYPES[mypokemon[i][9]]+", "+ALLTYPES[mypokemon[i][10]]+", "+ALLTYPES[mypokemon[i][11]];
-						}
+						}*/
 				}
 		}
 	}
